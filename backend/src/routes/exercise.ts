@@ -10,6 +10,46 @@ exerciseRouter.get("/", (req, res) => {
   });
 });
 
+// route for getting an particular exercise
+exerciseRouter.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  const exercise = await Exercise.findOne({
+    id: id,
+  });
+
+  res.json(exercise);
+});
+
+// deleting the particular exercise
+exerciseRouter.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+  await Exercise.deleteOne({
+    id: id,
+  });
+
+  res.json({
+    msg: `exercise with id: ${id} has been deleted`,
+  });
+});
+
+// updating the particular exercise
+exerciseRouter.put("/:id", async (req, res) => {
+  const id = req.params.id;
+  const { description, duration, date } = req.body;
+
+  const exercise = await Exercise.findByIdAndUpdate(
+    id,
+    {
+      description: description,
+      duration: duration,
+      date: date,
+    },
+    { new: true }
+  );
+
+  res.json(exercise);
+});
+
 // this will help to add the exercise to the particualr user
 exerciseRouter.post("/add-exercise", async (req, res) => {
   const username = req.body.username;
